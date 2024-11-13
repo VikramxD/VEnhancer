@@ -1,7 +1,8 @@
 """Configuration settings for VEnhancer parallel inference."""
 
 from typing import Literal
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
 
 class VEnhancerConfig(BaseSettings):

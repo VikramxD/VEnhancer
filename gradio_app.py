@@ -1,7 +1,6 @@
 import argparse
 import os
 import random
-
 import gradio as gr
 
 from enhance_a_video import VEnhancer

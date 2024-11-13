@@ -1,6 +1,7 @@
 """Configuration settings for VEnhancer model."""
 
-from pydantic import BaseSettings, Field
+from pydantic_settings import BaseSettings
+from pydantic import Field
 
 
 class VEnhancerConfig(BaseSettings):

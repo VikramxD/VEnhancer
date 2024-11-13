@@ -2,7 +2,6 @@ import os
 import subprocess
 import tempfile
 from typing import Mapping
-
 from PIL import Image
 import cv2
 from einops import rearrange
