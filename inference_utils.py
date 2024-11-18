@@ -95,20 +95,48 @@ def load_video(vid_path):
 
 
 def save_video(video, save_dir, file_name, fps=16.0):
+    """
+    Save video directly to the target path without using temporary files.
+    
+    Args:
+        video: Video frames to save
+        save_dir: Output directory
+        file_name: Output filename
+        fps: Frames per second
+    """
     output_path = os.path.join(save_dir, file_name)
+    os.makedirs(save_dir, exist_ok=True)
+    
+    # Convert frames to numpy arrays
     images = [(img.numpy()).astype("uint8") for img in video]
-    temp_dir = tempfile.mkdtemp()
-    for fid, frame in enumerate(images):
-        tpth = os.path.join(temp_dir, "%06d.png" % (fid + 1))
-        cv2.imwrite(tpth, frame[:, :, ::-1])
-    tmp_path = os.path.join(save_dir, "tmp.mp4")
-    cmd = f"ffmpeg -y -f image2 -framerate {fps} -i {temp_dir}/%06d.png \
-     -vcodec libx264 -crf 17 -pix_fmt yuv420p {tmp_path}"
-    status, output = subprocess.getstatusoutput(cmd)
-    if status != 0:
-        logger.error(f"Save Video Error with {output}")
-    os.system(f"rm -rf {temp_dir}")
-    os.rename(tmp_path, output_path)
+    
+    # Get video dimensions from first frame
+    height, width = images[0].shape[:2]
+    
+    # Create video writer directly to final path
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    video_writer = cv2.VideoWriter(
+        output_path,
+        fourcc,
+        fps,
+        (width, height)
+    )
+    
+    try:
+        # Write frames directly
+        for frame in images:
+            video_writer.write(frame[:, :, ::-1])  # Convert RGB to BGR for OpenCV
+            
+        logger.info(f"Saved video to: {output_path}")
+        
+    except Exception as e:
+        logger.error(f"Error saving video: {str(e)}")
+        raise
+        
+    finally:
+        video_writer.release()
+
+    return output_path
 
 
 def collate_fn(data, device):
