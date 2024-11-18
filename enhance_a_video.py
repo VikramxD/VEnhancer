@@ -6,7 +6,6 @@ adjust frame rates, and enhance video quality based on text prompts.
 import os
 import glob
 from typing import List, Optional
-
 import torch
 from easydict import EasyDict
 from huggingface_hub import hf_hub_download
