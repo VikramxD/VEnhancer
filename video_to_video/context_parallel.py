@@ -6,6 +6,12 @@ _CONTEXT_PARALLEL_SIZE = None
 
 
 def is_context_parallel_initialized():
+    """
+    Check if context parallel processing has been initialized.
+    
+    Returns:
+        bool: True if context parallel group is initialized, False otherwise
+    """
     if _CONTEXT_PARALLEL_GROUP is None:
         return False
     else:
@@ -13,6 +19,13 @@ def is_context_parallel_initialized():
 
 
 def set_context_parallel_group(size, group):
+    """
+    Set the context parallel group and size manually.
+    
+    Args:
+        size (int): Size of the context parallel group
+        group: PyTorch distributed process group
+    """
     global _CONTEXT_PARALLEL_GROUP
     global _CONTEXT_PARALLEL_SIZE
     _CONTEXT_PARALLEL_GROUP = group
@@ -20,6 +33,18 @@ def set_context_parallel_group(size, group):
 
 
 def initialize_context_parallel(context_parallel_size):
+    """
+    Initialize context parallel processing by creating process groups.
+    
+    Creates distributed process groups of specified size, where each group
+    contains consecutive ranks. Each process will be assigned to exactly one group.
+    
+    Args:
+        context_parallel_size (int): Number of processes per context parallel group
+        
+    Raises:
+        AssertionError: If context parallel group is already initialized
+    """
     global _CONTEXT_PARALLEL_GROUP
     global _CONTEXT_PARALLEL_SIZE
 
@@ -38,18 +63,45 @@ def initialize_context_parallel(context_parallel_size):
 
 
 def get_context_parallel_group():
+    """
+    Get the current context parallel process group.
+    
+    Returns:
+        torch.distributed.ProcessGroup: The current context parallel process group
+        
+    Raises:
+        AssertionError: If context parallel group is not initialized
+    """
     assert _CONTEXT_PARALLEL_GROUP is not None, "context parallel group is not initialized"
 
     return _CONTEXT_PARALLEL_GROUP
 
 
 def get_context_parallel_world_size():
+    """
+    Get the size of the context parallel group.
+    
+    Returns:
+        int: Number of processes in the context parallel group
+        
+    Raises:
+        AssertionError: If context parallel size is not initialized
+    """
     assert _CONTEXT_PARALLEL_SIZE is not None, "context parallel size is not initialized"
 
     return _CONTEXT_PARALLEL_SIZE
 
 
 def get_context_parallel_rank():
+    """
+    Get the rank of the current process within its context parallel group.
+    
+    Returns:
+        int: Rank of current process within its context parallel group (0 to size-1)
+        
+    Raises:
+        AssertionError: If context parallel size is not initialized
+    """
     assert _CONTEXT_PARALLEL_SIZE is not None, "context parallel size is not initialized"
 
     rank = torch.distributed.get_rank()
@@ -58,6 +110,15 @@ def get_context_parallel_rank():
 
 
 def get_context_parallel_group_rank():
+    """
+    Get the group index that the current process belongs to.
+    
+    Returns:
+        int: Index of the context parallel group this process belongs to
+        
+    Raises:
+        AssertionError: If context parallel size is not initialized
+    """
     assert _CONTEXT_PARALLEL_SIZE is not None, "context parallel size is not initialized"
 
     rank = torch.distributed.get_rank()
