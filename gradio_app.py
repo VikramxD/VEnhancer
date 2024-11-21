@@ -80,7 +80,6 @@ def get_parser():
 if __name__ == "__main__":
     parser = get_parser()
     args = parser.parse_args()
-
     result_dir = os.path.join("./", "results")
     venhancer_iface = venhancer_demo(result_dir, args.version)
     venhancer_iface.queue(max_size=12)
