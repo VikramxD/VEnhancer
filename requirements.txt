@@ -10,3 +10,4 @@ diffusers==0.30.0
 huggingface_hub==0.23.3
 gradio==4.41.0
 numpy==1.24
+loguru
